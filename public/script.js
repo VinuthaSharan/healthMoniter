@@ -1,5 +1,5 @@
-// API Base URL
-const API_BASE = 'http://localhost:5000/api';
+// API Base URL - works on both localhost and Azure
+const API_BASE = `${window.location.protocol}//${window.location.host}/api`;
 
 // Current user
 let currentUser = null;
