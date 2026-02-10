@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Health Monitor - Your Personal Health Dashboard</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="container">
+    <!-- Header -->
+    <header class="header">
+      <div class="header-content">
+        <h1>💚 Health Monitor</h1>
+        <p>Your Personal Health & Wellness Tracker</p>
+      </div>
+      <div class="user-info">
+        <span id="userWelcome">Welcome</span>
+        <button id="logoutBtn" class="btn-logout">Logout</button>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <!-- Authentication Section -->
+      <section id="authSection" class="auth-section">
+        <div class="auth-container">
+          <h2>Get Started</h2>
+          <form id="registrationForm">
+            <div class="form-group">
+              <label for="userName">Full Name</label>
+              <input type="text" id="userName" placeholder="Enter your name" required>
+            </div>
+            <div class="form-group">
+              <label for="userEmail">Email</label>
+              <input type="email" id="userEmail" placeholder="Enter your email" required>
+            </div>
+            <div class="form-group">
+              <label for="userPhone">Phone Number</label>
+              <input type="tel" id="userPhone" placeholder="Enter your phone number" required>
+            </div>
+            <button type="submit" class="btn-primary">Start Tracking</button>
+          </form>
+        </div>
+      </section>
+
+      <!-- Dashboard Section -->
+      <section id="dashboardSection" class="dashboard" style="display: none;">
+        <!-- Health Status Overview -->
+        <div class="overview-section">
+          <div class="health-score-card">
+            <h3>Overall Health Score</h3>
+            <div class="score-circle">
+              <div class="score-value" id="healthScore">0</div>
+              <div class="score-label">%</div>
+            </div>
+            <p id="healthStatus" class="status-text">Loading...</p>
+          </div>
+        </div>
+
+        <!-- Health Metrics Grid -->
+        <div class="metrics-grid">
+          <div class="metric-card sleep-card">
+            <div class="metric-icon">😴</div>
+            <h3>Sleep</h3>
+            <div class="metric-value">
+              <span id="sleepHours">0</span> <small>hours</small>
+            </div>
+            <p class="metric-suggestion" id="sleepSuggestion">Target: 7-9 hours</p>
+            <div class="metric-input">
+              <input type="number" id="sleepInput" min="0" max="24" step="0.5" placeholder="Enter hours">
+              <button class="btn-small" onclick="updateSleep()">Update</button>
+            </div>
+          </div>
+
+          <div class="metric-card walking-card">
+            <div class="metric-icon">🚶</div>
+            <h3>Walking</h3>
+            <div class="metric-value">
+              <span id="walkingHours">0</span> <small>hours/day</small>
+            </div>
+            <p class="metric-suggestion" id="walkingSuggestion">Target: 1-2 hours</p>
+            <div class="metric-input">
+              <input type="number" id="walkingInput" min="0" max="24" step="0.5" placeholder="Enter hours">
+              <button class="btn-small" onclick="updateWalking()">Update</button>
+            </div>
+          </div>
+
+          <div class="metric-card screen-card">
+            <div class="metric-icon">📱</div>
+            <h3>Screen Time</h3>
+            <div class="metric-value">
+              <span id="screenHours">0</span> <small>hours/day</small>
+            </div>
+            <p class="metric-suggestion" id="screenSuggestion">Target: &lt; 6 hours</p>
+            <div class="metric-input">
+              <input type="number" id="screenInput" min="0" max="24" step="0.5" placeholder="Enter hours">
+              <button class="btn-small" onclick="updateScreen()">Update</button>
+            </div>
+          </div>
+
+          <div class="metric-card water-card">
+            <div class="metric-icon">💧</div>
+            <h3>Water Intake</h3>
+            <div class="metric-value">
+              <span id="waterGlasses">0</span> <small>glasses</small>
+            </div>
+            <p class="metric-suggestion" id="waterSuggestion">Target: 8-10 glasses</p>
+            <div class="metric-input">
+              <input type="number" id="waterInput" min="0" max="20" step="1" placeholder="Enter glasses">
+              <button class="btn-small" onclick="updateWater()">Update</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bluetooth & Phone Sync Section -->
+        <div class="bluetooth-section">
+          <h3>📱 Sync Your Health Data</h3>
+          <p>Connect your smartwatch, fitness tracker, or sync directly from your Android phone.</p>
+          
+          <!-- Sync Options Tabs -->
+          <div class="sync-tabs">
+            <button type="button" class="sync-tab-btn active" onclick="switchSyncTab('phone')">
+              📱 Android Phone
+            </button>
+            <button type="button" class="sync-tab-btn" onclick="switchSyncTab('wearable')">
+              ⌚ Smartwatch/Tracker
+            </button>
+          </div>
+
+          <!-- Phone Sync Tab -->
+          <div id="phoneSyncTab" class="sync-tab-content active">
+            <h4>Sync Health Data from Your Android Phone</h4>
+            <p class="tab-description">Choose your health data source and sync with one click.</p>
+            
+            <!-- Phone Data Source Selection -->
+            <div class="phone-source-selection">
+              <div class="source-card" onclick="selectPhoneSource('googlefit')">
+                <div class="source-icon">🔗</div>
+                <div class="source-info">
+                  <h5>Google Fit</h5>
+                  <p>Syncs walking, heart rate, and activity data</p>
+                </div>
+                <div class="source-radio" id="googlefit-radio"></div>
+              </div>
+              
+              <div class="source-card" onclick="selectPhoneSource('samsunghealth')">
+                <div class="source-icon">💪</div>
+                <div class="source-info">
+                  <h5>Samsung Health</h5>
+                  <p>Syncs steps, sleep, and health metrics</p>
+                </div>
+                <div class="source-radio" id="samsunghealth-radio"></div>
+              </div>
+              
+              <div class="source-card" onclick="selectPhoneSource('manual')">
+                <div class="source-icon">✏️</div>
+                <div class="source-info">
+                  <h5>Manual Entry</h5>
+                  <p>Enter your health data directly</p>
+                </div>
+                <div class="source-radio" id="manual-radio" style="background: #10b981;"></div>
+              </div>
+            </div>
+
+            <!-- Phone Data Form (Manual) -->
+            <div id="phoneManualForm" class="phone-data-form" style="display: block;">
+              <h5>Enter Your Health Data</h5>
+              <div class="form-group">
+                <label>🚶 Walking Hours (today)</label>
+                <input type="number" id="phoneWalkingHours" placeholder="e.g., 1.5" step="0.1" min="0" max="24">
+              </div>
+              <div class="form-group">
+                <label>📱 Screen Time Hours (today)</label>
+                <input type="number" id="phoneScreenHours" placeholder="e.g., 4" step="0.1" min="0" max="24">
+              </div>
+              <div class="form-group">
+                <label>😴 Sleep Hours (last night)</label>
+                <input type="number" id="phoneSleepHours" placeholder="e.g., 7" step="0.1" min="0" max="24">
+              </div>
+              <div class="form-group">
+                <label>💧 Water Intake (glasses today)</label>
+                <input type="number" id="phoneWaterGlasses" placeholder="e.g., 8" step="1" min="0" max="20">
+              </div>
+              <button type="button" class="btn-primary" onclick="syncFromPhone()">
+                🔄 Sync Now
+              </button>
+            </div>
+
+            <!-- Google Fit Connection Status -->
+            <div id="googleFitForm" class="phone-data-form" style="display: none;">
+              <h5>Connect to Google Fit</h5>
+              <p class="info-text">You'll be redirected to Google to authorize access to your health data.</p>
+              <button type="button" class="btn-primary" onclick="connectGoogleFit()">
+                🔗 Connect Google Fit
+              </button>
+              <div id="googleFitStatus" class="sync-status" style="display: none;"></div>
+            </div>
+
+            <!-- Samsung Health Connection Status -->
+            <div id="samsungHealthForm" class="phone-data-form" style="display: none;">
+              <h5>Connect to Samsung Health</h5>
+              <p class="info-text">Auto-sync will pull your latest health data from Samsung Health.</p>
+              <button type="button" class="btn-primary" onclick="connectSamsungHealth()">
+                💪 Connect Samsung Health
+              </button>
+              <div id="samsungHealthStatus" class="sync-status" style="display: none;"></div>
+            </div>
+
+            <!-- Auto-Sync Configuration for Phone -->
+            <div class="auto-sync-config">
+              <h5>Auto-Sync Configuration</h5>
+              <div class="checkbox-group">
+                <label>
+                  <input type="checkbox" id="phoneAutoSyncCheckbox" onchange="togglePhoneAutoSync()">
+                  Enable auto-sync from phone (syncs every 5 minutes)
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <!-- Wearable Sync Tab -->
+          <div id="wearableSyncTab" class="sync-tab-content" style="display: none;">
+            <h4>⌚ Pair Smartwatch or Fitness Tracker</h4>
+            <p class="tab-description">Connect your smartwatch or fitness tracker for automatic health data sync.</p>
+            
+            <div class="bluetooth-controls">
+              <button type="button" class="btn-primary" onclick="discoverBluetoothDevices()">
+                🔍 Discover Devices
+              </button>
+              <button type="button" class="btn-primary" onclick="togglePairedDevices()">
+                📋 View Paired Devices
+              </button>
+            </div>
+
+            <!-- Discovered Devices List -->
+            <div id="discoveredDevicesList" style="display: none;" class="devices-list">
+              <h5>Available Devices (Tap to Pair)</h5>
+              <div id="devicesList" class="devices-grid">
+                <p class="loading">Searching for devices...</p>
+              </div>
+            </div>
+
+            <!-- Paired Devices List -->
+            <div id="pairedDevicesList" style="display: none;" class="devices-list">
+              <h5>Connected Devices</h5>
+              <div id="pairedList" class="paired-devices-grid">
+                <p class="loading">Loading devices...</p>
+              </div>
+            </div>
+
+            <!-- Device Actions -->
+            <div id="deviceActionsPanel" style="display: none;" class="device-actions">
+              <h5>Device Actions</h5>
+              <div class="action-buttons">
+                <button type="button" class="btn-small" onclick="syncSelectedDevice()">
+                  🔄 Manual Sync Now
+                </button>
+                <button type="button" class="btn-small" onclick="toggleAutoSync()">
+                  ⏱️ Enable Auto-Sync
+                </button>
+                <button type="button" class="btn-small" onclick="viewDeviceHistory()">
+                  📊 View History
+                </button>
+                <button type="button" class="btn-small btn-danger" onclick="unpairSelectedDevice()">
+                  🔌 Unpair Device
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sync Android Data Section -->
+        <div class="sync-section">
+          <h3>📲 Sync Android Device (Manual)</h3>
+          <p>Or manually sync your health data from your Android phone.</p>
+          <form id="syncForm">
+            <div class="sync-form-grid">
+              <div class="form-group">
+                <label for="syncWalking">Walking Hours (Today)</label>
+                <input type="number" id="syncWalking" min="0" max="24" step="0.5" placeholder="0">
+              </div>
+              <div class="form-group">
+                <label for="syncScreen">Screen Time (Today)</label>
+                <input type="number" id="syncScreen" min="0" max="24" step="0.5" placeholder="0">
+              </div>
+              <div class="form-group">
+                <label for="syncSleep">Sleep Hours (Last Night)</label>
+                <input type="number" id="syncSleep" min="0" max="24" step="0.5" placeholder="0">
+              </div>
+              <div class="form-group">
+                <label for="syncWater">Water Glasses (Today)</label>
+                <input type="number" id="syncWater" min="0" max="20" step="1" placeholder="0">
+              </div>
+            </div>
+            <button type="submit" class="btn-primary">Sync Data</button>
+          </form>
+        </div>
+
+        <!-- Recommendations Section -->
+        <div class="recommendations-section">
+          <h3>📋 Health Recommendations</h3>
+          <div id="recommendationsList" class="recommendations-list">
+            <p class="loading">Loading recommendations...</p>
+          </div>
+        </div>
+
+        <!-- Notifications Section -->
+        <div class="notifications-section">
+          <h3>🔔 Health Alerts</h3>
+          <div id="notificationsList" class="notifications-list">
+            <p class="empty-state">No alerts at the moment</p>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <p>&copy; 2026 Health Monitor. Stay healthy, stay happy! 💚</p>
+    </footer>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
