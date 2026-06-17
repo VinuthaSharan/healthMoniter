@@ -1,7 +1,7 @@
 # Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
 # More GitHub Actions for Azure: https://github.com/Azure/actions
 
-name: Build and deploy Node.js app to Azure Web App - HealthMonitor
+name: Build and deploy Node.js app to Azure Web App - healthMonitor
 
 on:
   push:
@@ -19,19 +19,15 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Set up Node.js version
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v3
         with:
-          node-version: '20.x'
+          node-version: '22.x'
 
       - name: npm install, build, and test
         run: |
           npm install
           npm run build --if-present
-        continue-on-error: false
-      
-      - name: Run tests (non-blocking)
-        run: npm run test --if-present
-        continue-on-error: true
+          npm run test --if-present
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
@@ -55,14 +51,15 @@ jobs:
       - name: Login to Azure
         uses: azure/login@v2
         with:
-          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_FD7DC613BEE9450DA48A0EC116138CA6 }}
-          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_2706BDED796C477A97514E3FFE8D9EF7 }}
-          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_E91E0444FF57430AA970AB0D1B752D71 }}
+          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_DBCED45E41B2485F804CAE7539063366 }}
+          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_2CB76755B0BA4CDBAF042D7E808C95F5 }}
+          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_DBD382918E864C04A61EB869D1206689 }}
 
       - name: 'Deploy to Azure Web App'
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v3
         with:
-          app-name: 'HealthMonitor'
+          app-name: 'healthMonitor'
           slot-name: 'Production'
           package: .
+          
